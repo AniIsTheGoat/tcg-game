@@ -1,0 +1,12 @@
+{
+  "name": "anime-tcg-serveur",
+  "version": "1.0.0",
+  "description": "Serveur de salons 1v1 pour ANIME TCG (relais simple)",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "ws": "^8.18.0"
+  }
+}
