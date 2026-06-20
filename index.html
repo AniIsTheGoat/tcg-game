@@ -735,6 +735,10 @@ main{max-width:1200px;margin:0 auto;padding:30px 22px 80px}
   padding:3px 10px;border-radius:999px;letter-spacing:.4px;box-shadow:0 4px 12px -3px rgba(0,0,0,.6)}
 .pack-old{opacity:.55;margin-left:6px;font-size:.85em;text-decoration:line-through}
 
+/* repère du seuil de déblocage sur la barre de pitié */
+.pity-track{position:relative}
+.pity-mark{position:absolute;top:-2px;bottom:-2px;width:2px;background:rgba(255,255,255,.55);box-shadow:0 0 4px rgba(255,255,255,.6)}
+
 </style>
 </head>
 <body>
@@ -828,8 +832,8 @@ const PACK_FIGHTERS = 2;      // 2 dernières = combattantes
 const RARITIES = {
   commune:   {label:"Commune",    tier:0, color:"#9aa4b2", color2:"#c8d0db", glow:"rgba(154,164,178,.40)", foil:"none",  weight:100, stars:1},
   rare:      {label:"Rare",       tier:1, color:"#4ea8ff", color2:"#9fd2ff", glow:"rgba(78,168,255,.55)",  foil:"sheen", weight:38,  stars:2},
-  epique:    {label:"Épique",     tier:2, color:"#b06bff", color2:"#e3c2ff", glow:"rgba(176,107,255,.65)", foil:"holo",  weight:9,   stars:3},
-  legendaire:{label:"Légendaire", tier:3, color:"#ffc24b", color2:"#fff0b0", glow:"rgba(255,194,75,.78)",  foil:"prism", weight:1.4, stars:4},
+  epique:    {label:"Épique",     tier:2, color:"#b06bff", color2:"#e3c2ff", glow:"rgba(176,107,255,.65)", foil:"holo",  weight:6,   stars:3},
+  legendaire:{label:"Légendaire", tier:3, color:"#ffc24b", color2:"#fff0b0", glow:"rgba(255,194,75,.78)",  foil:"prism", weight:0.5, stars:4},
   mythique:  {label:"Mythique",   tier:4, color:"#ff5db0", color2:"#7af0ff", glow:"rgba(255,93,176,.85)",  foil:"mythic",weight:0.02,stars:5},
   divine:    {label:"Divine",     tier:5, color:"#fff4cf", color2:"#ffd86b", glow:"rgba(255,236,170,.95)", foil:"divine",weight:0.004,stars:6},
 };
@@ -1843,7 +1847,7 @@ function bindControls(){
       B.mode=null; renderBattle();
     }); bindCancel(()=>{B.mode=null;renderBattle();}); return;
   }
-  if(["haricot","armure","ramen","robe"].includes(B.mode)){
+  if(["haricot","armure","ramen","robe","sukunadoigt","mahogararoue"].includes(B.mode)){
     attachClickTargets(f=>applyTargetedUtil(f)); bindCancel(()=>{B.mode=null;B.pendingUtil=null;renderBattle();}); return;
   }
   if(B.mode==="benchPlace"){
@@ -1950,7 +1954,11 @@ function playUtil(uid, handIdx, side, foe, isAI){
     case "detecteur":
       if(isAI){ discardFrom(side,handIdx); side.supportThisTurn=true; return true; }
       pushLog("Détecteur : aperçu de ta pile."); showReveal("3 prochaines cartes de ta pile", side.pile.slice(0,3).map(handPreviewItem)); discardFrom(side,handIdx); side.supportThisTurn=true; renderBattle(); return true;
-    case "haricot": case "armure": case "ramen": case "robeakatsuki":{
+    case "invertedspear": case "prisonceleste":{
+      // supports sans ciblage : effet immédiat sur le bon camp
+      applyUtilTo(uid, side.active, side, handIdx); side.supportThisTurn=true; if(!isAI) renderBattle(); return true;
+    }
+    case "haricot": case "armure": case "ramen": case "robeakatsuki": case "sukunadoigt": case "mahogararoue":{
       if(isAI){
         // IA : choisit la meilleure cible automatiquement
         const target = chooseUtilTargetAI(uid, side);
@@ -2917,6 +2925,7 @@ let spinsSinceDivine = 0;     // pity divine (garanti à 30000, déblocable apr�
 let packsOpened = 0;          // nombre de boosters déjà ouverts (tarif + garantie débutant)
 
 const PITY_MYTHIQUE = 12500;
+const MYTHIQUE_UNLOCK = 6000;  // aucun mythique avant 6000 tirages depuis le dernier
 const PITY_DIVINE = 30000;
 const DIVINE_UNLOCK = 12500;  // les divines ne sont tirables qu'après 12500 spins au total
 const STARTER_PACKS = 4;      // les 4 premiers boosters : prix réduit + 20 cartes différentes garanties
@@ -3024,9 +3033,12 @@ function rollFighterRarity(luckBoost){
     const pDiv = RARITIES.divine.weight/100 * (1 + 12*(spinsSinceDivine/PITY_DIVINE));
     if(Math.random()*100 < pDiv){ return grantRarity("divine"); }
   }
-  // --- chance progressive mythique ---
-  const pMyth = RARITIES.mythique.weight/100 * (1 + 30*(spinsSinceMythique/PITY_MYTHIQUE));
-  if(Math.random()*100 < pMyth){ return grantRarity("mythique"); }
+  // --- chance progressive mythique : rien avant 6000, monte de 6000 à 12500 ---
+  if(spinsSinceMythique >= MYTHIQUE_UNLOCK){
+    const prog = (spinsSinceMythique - MYTHIQUE_UNLOCK) / (PITY_MYTHIQUE - MYTHIQUE_UNLOCK); // 0 à 1
+    const pMyth = RARITIES.mythique.weight/100 * (1 + 60*prog);
+    if(Math.random()*100 < pMyth){ return grantRarity("mythique"); }
+  }
 
   // --- sinon, tirage normal commune..légendaire (avec boost de chance) ---
   const tiers = ["commune","rare","epique","legendaire"];
@@ -3194,8 +3206,8 @@ function renderBoosters(){
       <p class="sub">Chaque booster contient ${PACK_SIZE} cartes : ${PACK_UTILS} objets ou énergies, puis ${PACK_FIGHTERS} combattantes. Les fusions ne s'obtiennent que par fusion. Les doublons ne rapportent rien.</p></div>
     <div class="pity-zone">
       <div class="pity-bar">
-        <div class="pity-head"><span class="pity-label myth">Pitié Mythique</span><span class="pity-count">${spinsSinceMythique} / ${PITY_MYTHIQUE}</span></div>
-        <div class="pity-track"><div class="pity-fill myth" style="width:${pMyth}%"></div></div>
+        <div class="pity-head"><span class="pity-label myth">Pitié Mythique ${spinsSinceMythique<MYTHIQUE_UNLOCK?'🔒':''}</span><span class="pity-count">${spinsSinceMythique<MYTHIQUE_UNLOCK?`possible dès ${MYTHIQUE_UNLOCK} · ${spinsSinceMythique}/${MYTHIQUE_UNLOCK}`:`${spinsSinceMythique} / ${PITY_MYTHIQUE}`}</span></div>
+        <div class="pity-track"><div class="pity-fill myth" style="width:${pMyth}%"></div><div class="pity-mark" style="left:${Math.round(MYTHIQUE_UNLOCK/PITY_MYTHIQUE*100)}%"></div></div>
       </div>
       <div class="pity-bar">
         <div class="pity-head"><span class="pity-label div">Pitié Divine ${divineUnlocked?'':'🔒'}</span><span class="pity-count">${divineUnlocked?`${spinsSinceDivine} / ${PITY_DIVINE}`:`débloqué à ${DIVINE_UNLOCK} tirages (${totalSpins}/${DIVINE_UNLOCK})`}</span></div>
