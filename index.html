@@ -729,6 +729,12 @@ main{max-width:1200px;margin:0 auto;padding:30px 22px 80px}
 .pity-fill.myth{background:linear-gradient(90deg,#ff5db0,#7af0ff)}
 .pity-fill.div{background:linear-gradient(90deg,#ffd86b,#fff4cf)}
 
+/* offre débutant (4 premiers boosters) */
+.pack-starter{position:absolute;top:10px;left:10px;z-index:3;
+  background:linear-gradient(135deg,#7cff8f,#3fd06a);color:#06210f;font-weight:800;font-size:11px;
+  padding:3px 10px;border-radius:999px;letter-spacing:.4px;box-shadow:0 4px 12px -3px rgba(0,0,0,.6)}
+.pack-old{opacity:.55;margin-left:6px;font-size:.85em;text-decoration:line-through}
+
 </style>
 </head>
 <body>
@@ -800,7 +806,8 @@ function img(key){ return encodeURI(PATHS[key] || key); }
 
 /* ============================================================ ÉCONOMIE & RÈGLES ============================================================ */
 const START_MONEY = 200;
-const PACK_PRICE = { naruto: 50, dragonball: 750, jjk: 1500 };
+const PACK_PRICE_STARTER = 50;   // prix des 4 premiers boosters
+const PACK_PRICE_NORMAL = 250;   // prix de tous les boosters ensuite
 const BATTLE_REWARD = { win: 125, lose: 25 };
 const POINTS_TO_WIN = 3;
 const BENCH_SIZE = 5;
@@ -1151,7 +1158,7 @@ const FUSIONS = [
   {ingredients:["gokuBase","vegetaBase"],result:"gokuvegetaBase"},
   {ingredients:["gokuSSJ1","vegetaSSJ1"],result:"gokuvegetaSSJ1"},
   {ingredients:["gokuvegetaSSJ1","trunksSSJ1"],result:"gokuvegetatrunksSSJ1"},
-  {ingredients:["gokuSSJ1","vegetaBase"],result:"vegetoBase"},
+  {ingredients:["gokuvegetaBase","detecteur"],result:"vegetoBase"},
   {ingredients:["gokuSSJ2","vegetaSSJ2"],result:"vegetoSSJ1"},
   {ingredients:["gojoPrime","sukunaPrime"],result:"gojosukuna"},
   {ingredients:["mahoraga","sukunaPrime"],result:"mahoragasukuna"},
@@ -2899,6 +2906,7 @@ function netOnEnd(){ /* géré via relay 'end' dans netOnRelay si besoin */ }
    collection, fusion, navigation.
    ============================================================ */
 const SAVE_KEY = "animeTCG_save_v7";
+const OLD_SAVE_KEY = "animeTCG_save_v6";
 let collection = {};   // {cardId: count}
 let money = START_MONEY;
 let maxStage = 1;
@@ -2906,14 +2914,35 @@ let savedDeck = [];
 let totalSpins = 0;           // nombre total de combattantes tirées
 let spinsSinceMythique = 0;   // pity mythique (garanti à 12500)
 let spinsSinceDivine = 0;     // pity divine (garanti à 30000, déblocable après 12500 spins)
+let packsOpened = 0;          // nombre de boosters déjà ouverts (tarif + garantie débutant)
 
 const PITY_MYTHIQUE = 12500;
 const PITY_DIVINE = 30000;
 const DIVINE_UNLOCK = 12500;  // les divines ne sont tirables qu'après 12500 spins au total
+const STARTER_PACKS = 4;      // les 4 premiers boosters : prix réduit + 20 cartes différentes garanties
+/* prix d'un booster : réduit tant que le joueur n'a pas ouvert ses 4 premiers */
+function packPrice(){ return packsOpened < STARTER_PACKS ? PACK_PRICE_STARTER : PACK_PRICE_NORMAL; }
 
 function loadSave(){
   try{
-    const s = JSON.parse(localStorage.getItem(SAVE_KEY));
+    let raw = localStorage.getItem(SAVE_KEY);
+    // --- migration depuis une ancienne sauvegarde v6 ---
+    if(!raw){
+      const old = localStorage.getItem(OLD_SAVE_KEY);
+      if(old){
+        const o = JSON.parse(old);
+        collection = o.collection || {};
+        money = typeof o.money==="number" ? o.money : START_MONEY;
+        maxStage = o.maxStage || 1;
+        savedDeck = Array.isArray(o.savedDeck) ? o.savedDeck : [];
+        // un ancien joueur a déjà ouvert des boosters : on considère les 4 starters comme consommés
+        packsOpened = STARTER_PACKS;
+        totalSpins = 0; spinsSinceMythique = 0; spinsSinceDivine = 0;
+        persist(); // écrit immédiatement la sauvegarde v7 migrée
+        return;
+      }
+    }
+    const s = JSON.parse(raw);
     if(s){
       collection = s.collection || {};
       money = typeof s.money==="number" ? s.money : START_MONEY;
@@ -2922,11 +2951,12 @@ function loadSave(){
       totalSpins = s.totalSpins || 0;
       spinsSinceMythique = s.spinsSinceMythique || 0;
       spinsSinceDivine = s.spinsSinceDivine || 0;
+      packsOpened = s.packsOpened || 0;
     }
   }catch(e){ collection={}; money=START_MONEY; }
 }
 function persist(){
-  localStorage.setItem(SAVE_KEY, JSON.stringify({collection,money,maxStage,savedDeck,totalSpins,spinsSinceMythique,spinsSinceDivine}));
+  localStorage.setItem(SAVE_KEY, JSON.stringify({collection,money,maxStage,savedDeck,totalSpins,spinsSinceMythique,spinsSinceDivine,packsOpened}));
 }
 
 /* éléments racine */
@@ -3046,26 +3076,48 @@ function addToCollection(id){
 function openPack(anime){
   const fpool = fightersOf(anime);
   const cards = [];
+  // mode "débutant" : sur les 4 premiers boosters, on garantit des cartes JAMAIS encore obtenues
+  const starter = packsOpened < STARTER_PACKS;
+  // on tient à jour l'ensemble des cartes déjà possédées (collection + celles de ce pack)
+  const owned = new Set(Object.keys(collection).filter(id=>collection[id]>0));
 
-  // 3 utilitaires/énergies — souvent communes (énergies), parfois mieux
-  for(let i=0;i<PACK_UTILS;i++){
-    if(Math.random()<0.62){
-      const eids=Object.keys(ENERGY_CARDS);
-      cards.push(eids[Math.floor(Math.random()*eids.length)]);
-    }else{
-      const tier=rollTier(1.0);
-      cards.push(pickByTier(Object.keys(UTILS), tier));
+  function pickUnique(poolFn, tier){
+    // essaie plusieurs fois d'obtenir une carte non encore possédée
+    for(let t=0;t<14;t++){
+      const id = poolFn(tier);
+      if(id && !owned.has(id)){ owned.add(id); return id; }
     }
+    // repli : prend la première carte nouvelle d'un pool élargi adapté au type
+    const isUtilPool = (poolFn===pickUtil);
+    const wide = isUtilPool ? Object.keys(UTILS).concat(Object.keys(ENERGY_CARDS))
+                            : fpool.concat(Object.keys(CARDS).filter(id=>!CARDS[id].enemy));
+    const fresh = wide.find(id=>!owned.has(id));
+    if(fresh){ owned.add(fresh); return fresh; }
+    return poolFn(tier); // tout est déjà possédé : on lâche la contrainte
   }
-  // 2 combattantes — la dernière a un boost de chance (slot "hit")
+  const pickUtil = ()=>{
+    if(Math.random()<0.62){ const eids=Object.keys(ENERGY_CARDS); return eids[Math.floor(Math.random()*eids.length)]; }
+    return pickByTier(Object.keys(UTILS), rollTier(1.0));
+  };
+
+  // 3 utilitaires/énergies
+  for(let i=0;i<PACK_UTILS;i++){
+    if(starter){ cards.push(pickUnique(pickUtil)); }
+    else { cards.push(pickUtil()); }
+  }
+  // 2 combattantes
   for(let i=0;i<PACK_FIGHTERS;i++){
     const isLast = (i===PACK_FIGHTERS-1);
     const tier = rollFighterRarity(isLast ? 1.4 : 1.05);
-    // mythique/divine : on pioche dans TOUTES les combattantes de ce tier (tous animes),
-    // sinon on reste sur l'anime du pack
     let pool = fpool;
     if(tier==="mythique" || tier==="divine"){ pool = fightersAllOfTier(tier); }
-    cards.push(pickByTier(pool, tier));
+    if(starter){
+      // sur les starters, on garde la rareté tirée mais on force une carte unique de ce tier
+      const fn = (tr)=>pickByTier(pool, tr);
+      cards.push(pickUnique(fn, tier));
+    } else {
+      cards.push(pickByTier(pool, tier));
+    }
   }
 
   const results = cards.map(id=>{
@@ -3152,16 +3204,17 @@ function renderBoosters(){
     </div>
     <div class="packs">
       ${Object.entries(ANIMES).map(([key,a])=>{
-        const price=PACK_PRICE[key], can=money>=price;
+        const price=packPrice(), can=money>=price, starter=packsOpened<STARTER_PACKS;
         return `<div class="pack" style="--accent:${a.accent};--accent2:${a.accent2}">
           <div class="pack-art">
             <img src="${img(a.pack)}" alt="${a.label}" onerror="this.style.opacity=.2">
             <div class="pack-shine"></div>
+            ${starter?`<div class="pack-starter">Offre débutant</div>`:''}
             <div class="pack-info"><div class="pack-name">${a.label}</div>
               <div class="pack-desc">Booster ${PACK_SIZE} cartes</div></div>
           </div>
           <div class="pack-footer">
-            <span class="pack-price">${coinImg()} ${price}</span>
+            <span class="pack-price">${coinImg()} ${price}${starter?` <s class="pack-old">${PACK_PRICE_NORMAL}</s>`:''}</span>
           </div>
           <button class="pack-buy" data-anime="${key}" ${can?'':'disabled'}>
             ${can?`Ouvrir un booster`:`Pas assez de pièces`}
@@ -3173,10 +3226,12 @@ function renderBoosters(){
 }
 
 function buyAndOpen(anime){
-  const price=PACK_PRICE[anime];
+  const price=packPrice();
   if(money<price) return;
-  money-=price; updateMoneyUI(); persist();
+  money-=price; updateMoneyUI();
   const results=openPack(anime);
+  packsOpened++;
+  persist();
   runPackOpening(results);
 }
 
