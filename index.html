@@ -804,7 +804,20 @@ const PATHS = {
   capsulecorp:"Cartes/Utilitaires/capsulecorp.jpg", ramen:"Cartes/Utilitaires/ramen.jpg",
   prisonceleste:"Cartes/Utilitaires/prisonceleste.jpg", invertedspear:"Cartes/Utilitaires/invertedspearofheaven.jpg",
   mahogararoue:"Cartes/Utilitaires/mahogararoue.jpg", sukunadoigt:"Cartes/Utilitaires/sukunadoigt.jpg",
-  narutoPack1:"Packs/narutoPack1.png", dbzPack1:"Packs/dbzPack1.png", jjkPack:"Packs/jjk.jpg", money:"Misc/Logo/money1.png",
+  disque:"Cartes/Utilitaires/disque.jpg", requiemarrow:"Cartes/Utilitaires/requiemarrow.jpg",
+  redstoneaja:"Cartes/Utilitaires/redstoneaja.jpg", masquedepierre:"Cartes/Utilitaires/masquedepierre.jpg",
+  jotaroBase:"Cartes/JJBA/jotaroBase.jpg", jotaroSemiStand:"Cartes/JJBA/jotaroSemiStand.jpg",
+  jotaroStand:"Cartes/JJBA/JotaroStand.jpg", dioBase:"Cartes/JJBA/dioBase.jpg",
+  dioSemiStand:"Cartes/JJBA/dioSemiStand.jpg", dioStand:"Cartes/JJBA/dioStand.jpg",
+  dioOverNight:"Cartes/JJBA/dioOverNight.jpg", dioOverHeaven:"Cartes/JJBA/dioOverHeaven.jpg",
+  giornoBase:"Cartes/JJBA/giornoBase.jpg", giornoStand:"Cartes/JJBA/giornoStand.jpg",
+  giornoRequiem:"Cartes/JJBA/giornoRequiem.jpg", josephBase:"Cartes/JJBA/josephBase.jpg",
+  josephPrime:"Cartes/JJBA/josephPrime.jpg", silverchariotRequiem:"Cartes/JJBA/silverchariotRequiem.jpg",
+  madeinheaven:"Cartes/JJBA/madeinheaven.jpg",
+  stardustcrussaders:"Cartes/JJBA/Multi/stardustcrussaders.jpg",
+  lapassione:"Cartes/JJBA/Multi/lapassione.jpg",
+  giornobucciariti:"Cartes/JJBA/Multi/giornobucciariti.jpg",
+  narutoPack1:"Packs/narutoPack1.png", dbzPack1:"Packs/dbzPack1.png", jjkPack:"Packs/jjk.jpg", jjbaPack:"Packs/jjba.jpg", money:"Misc/Logo/money1.png",
 };
 function img(key){ return encodeURI(PATHS[key] || key); }
 
@@ -865,6 +878,7 @@ const ANIMES = {
   naruto:{label:"Naruto",pack:"narutoPack1",accent:"#ff8a3d",accent2:"#ffd24b"},
   dragonball:{label:"Dragon Ball",pack:"dbzPack1",accent:"#ff6a00",accent2:"#ffcf3a"},
   jjk:{label:"Jujutsu Kaisen",pack:"jjkPack",accent:"#7c5cff",accent2:"#c9b3ff"},
+  jjba:{label:"JoJo's Bizarre Adventure",pack:"jjbaPack",accent:"#e8b53a",accent2:"#ffe08a"},
 };
 
 /* ============================================================ COÛTS & RETRAITE ============================================================ */
@@ -901,11 +915,29 @@ const COSTS = {
   gojoLimitlessVoid:[{universelle:3},{universelle:5}],
   sukunaHeian:[{universelle:3},{universelle:5}],
   yujiModulo:[{universelle:3},{universelle:5}],
+  /* JJBA */
+  jotaroBase:[{rouge:1},{rouge:2}], giornoBase:[{verte:1},{verte:2}], josephBase:[{verte:1},{verte:2}],
+  jotaroSemiStand:[{rouge:2},{rouge:2,universelle:1}], dioBase:[{rouge:2},{rouge:2,universelle:1}],
+  dioSemiStand:[{rouge:2},{rouge:2,universelle:1}],
+  josephPrime:[{verte:2},{verte:2,universelle:1}], jotaroStand:[{rouge:2},{rouge:2,universelle:1}],
+  giornoStand:[{verte:2},{verte:2,universelle:1}], dioStand:[{rouge:2},{rouge:2,universelle:1}],
+  dioOverNight:[{rouge:2,universelle:1},{rouge:3,universelle:2}],
+  giornoRequiem:[{verte:2,universelle:1},{verte:3,universelle:2}],
+  silverchariotRequiem:[{universelle:3},{universelle:5}],
+  dioOverHeaven:[{universelle:3},{universelle:5}],
+  madeinheaven:[{universelle:3},{universelle:5}],
+  stardustcrussaders:[{jaune:2,universelle:1},{jaune:2,universelle:2}],
+  lapassione:[{jaune:2,universelle:1},{jaune:2,universelle:2}],
+  giornobucciariti:[{jaune:2,universelle:2},{jaune:2,universelle:3}],
   narutoDuoSrc:[{rouge:1},{rouge:2}], sasukeDuoSrc:[{rouge:1},{rouge:2}],
   janenbaE:[{bleue:2},{bleue:2,universelle:1}], painE:[{verte:2},{verte:2,universelle:1}],
   itachiE:[{verte:2},{verte:2,universelle:1}], obitoE:[{verte:2,universelle:1},{verte:2,universelle:2}],
   freezerE:[{bleue:2,universelle:1},{bleue:2,universelle:2}], madaraE:[{rouge:2,universelle:1},{rouge:2,universelle:2}],
   kidbuuE:[{bleue:2,universelle:1},{bleue:2,universelle:3}],
+  freezerFinalE:[{bleue:2,universelle:1},{bleue:3,universelle:2}],
+  buuE:[{bleue:2,universelle:1},{bleue:3,universelle:2}],
+  dioStandE:[{rouge:2,universelle:1},{rouge:3,universelle:2}],
+  dioHeavenE:[{universelle:3},{universelle:5}],
 };
 const RETREAT = { commune:1, rare:1, epique:2, legendaire:2, mythique:3, divine:4 };
 
@@ -1003,6 +1035,48 @@ const CARDS = {
   yujiModulo:{name:"Yuji · Modulo",anime:"jjk",img:"yujiModulo",rarity:"divine",type:"fusion",hp:255,
     talent:"fureur",
     attacks:[{name:"Flux Cursé",dmg:96,vfx:"chidori"},{name:"Black Flash Infini",dmg:150,vfx:"ki_explosion",scale:20}]},
+
+  /* ---- JoJo's Bizarre Adventure ---- */
+  jotaroBase:{name:"Jotaro Kujo",anime:"jjba",img:"jotaroBase",rarity:"commune",type:"combat",hp:78,
+    attacks:[{name:"Coup de poing",dmg:22,vfx:"slash"},{name:"Ora !",dmg:36,vfx:"ki_explosion"}]},
+  giornoBase:{name:"Giorno Giovanna",anime:"jjba",img:"giornoBase",rarity:"commune",type:"technique",hp:76,
+    attacks:[{name:"Coup vital",dmg:20,vfx:"slash"},{name:"Création de vie",dmg:34,vfx:"beam"}]},
+  josephBase:{name:"Joseph Joestar",anime:"jjba",img:"josephBase",rarity:"rare",type:"technique",hp:88,
+    attacks:[{name:"Hamon",dmg:26,vfx:"beam"},{name:"Stratégie rusée",dmg:46,vfx:"slash"}]},
+  jotaroSemiStand:{name:"Jotaro & Star Platinum",anime:"jjba",img:"jotaroSemiStand",rarity:"epique",type:"combat",hp:108,
+    attacks:[{name:"Barrage Ora",dmg:42,vfx:"ki_explosion"},{name:"Star Finger",dmg:64,vfx:"chidori"}]},
+  dioBase:{name:"DIO (Vampire)",anime:"jjba",img:"dioBase",rarity:"epique",type:"combat",hp:110,
+    talent:"vengeance",
+    attacks:[{name:"Vampirisme",dmg:40,vfx:"dark_sphere"},{name:"Space Ripper",dmg:64,vfx:"beam"}]},
+  dioSemiStand:{name:"DIO & The World",anime:"jjba",img:"dioSemiStand",rarity:"epique",type:"combat",hp:112,
+    attacks:[{name:"Muda Muda",dmg:44,vfx:"ki_explosion"},{name:"Knife Throw",dmg:66,vfx:"slash"}]},
+  josephPrime:{name:"Joseph Prime",anime:"jjba",img:"josephPrime",rarity:"legendaire",type:"technique",hp:126,
+    talent:"mentor",
+    attacks:[{name:"Hamon Overdrive",dmg:54,vfx:"beam"},{name:"Hermit Purple",dmg:80,vfx:"genjutsu"}]},
+  jotaroStand:{name:"Star Platinum",anime:"jjba",img:"jotaroStand",rarity:"legendaire",type:"combat",hp:134,
+    talent:"rivalite",
+    attacks:[{name:"Ora Ora Ora",dmg:56,vfx:"ki_explosion"},{name:"Star Platinum: The World",dmg:84,vfx:"void"}]},
+  giornoStand:{name:"Gold Experience",anime:"jjba",img:"giornoStand",rarity:"legendaire",type:"technique",hp:130,
+    talent:"catalyseur",
+    attacks:[{name:"Muda Vitale",dmg:54,vfx:"slash"},{name:"Life Beat",dmg:82,vfx:"beam"}]},
+  dioStand:{name:"DIO · The World",anime:"jjba",img:"dioStand",rarity:"legendaire",type:"combat",hp:136,
+    talent:"fureur",
+    attacks:[{name:"The World !",dmg:56,vfx:"void"},{name:"Time Stop",dmg:84,vfx:"dark_sphere"}]},
+  dioOverNight:{name:"DIO Over Night",anime:"jjba",img:"dioOverNight",rarity:"mythique",type:"combat",hp:208,
+    talent:"surcharge",
+    attacks:[{name:"Arrêt du temps",dmg:84,vfx:"void"},{name:"The World Over Time",dmg:124,vfx:"dark_sphere",scale:15}]},
+  giornoRequiem:{name:"Gold Experience Requiem",anime:"jjba",img:"giornoRequiem",rarity:"mythique",type:"technique",hp:215,
+    talent:"infini",
+    attacks:[{name:"Retour à Zéro",dmg:86,vfx:"void"},{name:"Requiem: Néant",dmg:128,vfx:"dark_sphere",scale:16}]},
+  silverchariotRequiem:{name:"Silver Chariot Requiem",anime:"jjba",img:"silverchariotRequiem",rarity:"divine",type:"fusion",hp:255,
+    talent:"adaptation",
+    attacks:[{name:"Échange d'âmes",dmg:96,vfx:"genjutsu"},{name:"Requiem Éternel",dmg:150,vfx:"dark_sphere",scale:20}]},
+  dioOverHeaven:{name:"DIO Over Heaven",anime:"jjba",img:"dioOverHeaven",rarity:"divine",type:"fusion",hp:275,
+    talent:"surcharge",
+    attacks:[{name:"Réécriture du destin",dmg:100,vfx:"void"},{name:"Heaven Ascension",dmg:158,vfx:"dark_sphere",scale:22}]},
+  madeinheaven:{name:"Made in Heaven",anime:"jjba",img:"madeinheaven",rarity:"divine",type:"fusion",hp:265,
+    talent:"fureur",
+    attacks:[{name:"Accélération",dmg:98,vfx:"beam"},{name:"Nouvel Univers",dmg:155,vfx:"meteor",scale:21}]},
 };
 const MULTI = {
   sasukenarutotg:{name:"Naruto & Sasuke",anime:"naruto",img:"sasukenarutotg",rarity:"mythique",type:"fusion",hp:200,
@@ -1032,6 +1106,15 @@ const MULTI = {
   sukunayuji:{name:"Sukuna & Yuji",anime:"jjk",img:"sukunayuji",rarity:"mythique",type:"fusion",hp:208,
     talent:"fureur",
     attacks:[{name:"Symbiose Cursée",dmg:82,vfx:"chidori"},{name:"Cleave Infini",dmg:120,vfx:"slash",scale:15}]},
+  stardustcrussaders:{name:"Stardust Crusaders",anime:"jjba",img:"stardustcrussaders",rarity:"mythique",type:"fusion",hp:212,
+    talent:"mentor",
+    attacks:[{name:"Assaut du groupe",dmg:84,vfx:"ki_explosion"},{name:"Ora Ora Barrage",dmg:122,vfx:"chidori",scale:15}]},
+  lapassione:{name:"La Passione",anime:"jjba",img:"lapassione",rarity:"mythique",type:"fusion",hp:210,
+    talent:"catalyseur",
+    attacks:[{name:"Gang Attack",dmg:82,vfx:"slash"},{name:"Golden Wind",dmg:120,vfx:"beam",scale:15}]},
+  giornobucciariti:{name:"Giorno & Bucciarati",anime:"jjba",img:"giornobucciariti",rarity:"mythique",type:"fusion",hp:214,
+    talent:"surcharge",
+    attacks:[{name:"Sticky Fingers",dmg:84,vfx:"slash"},{name:"Gold Requiem Combo",dmg:124,vfx:"void",scale:16}]},
 };
 const DUO = {
   narutoDuoSrc:{name:"Naruto (Duo)",anime:"naruto",img:"narutoDuo",rarity:"rare",type:"combat",duo:true,hp:75,
@@ -1054,6 +1137,14 @@ const ENEMIES = {
     attacks:[{name:"Susanoo Parfait",dmg:60,vfx:"genjutsu"},{name:"Météores Géants",dmg:100,vfx:"meteor"}]},
   kidbuuE:{name:"Kid Buu",anime:"dragonball",img:"kidbuu",rarity:"mythique",type:"energie",hp:180,enemy:true,
     attacks:[{name:"Vague Anéantissante",dmg:62,vfx:"ki_explosion"},{name:"Bombe Planétaire",dmg:110,vfx:"dark_sphere"}]},
+  freezerFinalE:{name:"Freezer Forme Finale",anime:"dragonball",img:"freezerBase",rarity:"mythique",type:"energie",hp:215,enemy:true,
+    attacks:[{name:"Death Ball",dmg:78,vfx:"dark_sphere"},{name:"Supernova Cosmique",dmg:122,vfx:"meteor"}]},
+  buuE:{name:"Majin Buu",anime:"dragonball",img:"kidbuu",rarity:"mythique",type:"energie",hp:225,enemy:true,
+    attacks:[{name:"Onde Destructrice",dmg:80,vfx:"ki_explosion"},{name:"Anéantissement Total",dmg:126,vfx:"dark_sphere"}]},
+  dioStandE:{name:"DIO · The World",anime:"jjba",img:"dioStand",rarity:"mythique",type:"combat",hp:235,enemy:true,
+    attacks:[{name:"The World !",dmg:82,vfx:"void"},{name:"Arrêt du Temps",dmg:130,vfx:"dark_sphere"}]},
+  dioHeavenE:{name:"DIO Over Heaven",anime:"jjba",img:"dioOverHeaven",rarity:"divine",type:"fusion",hp:300,enemy:true,
+    attacks:[{name:"Réécriture du Destin",dmg:98,vfx:"void"},{name:"Heaven Ascension",dmg:165,vfx:"meteor"}]},
 };
 
 /* ============================================================
@@ -1150,6 +1241,14 @@ const UTILS = {
     desc:"La carte équipée ignore les dégâts de faiblesse et gagne +5 dégâts par tour."},
   sukunadoigt:{name:"Doigt de Sukuna",img:"sukunadoigt",kind:"attach",rarity:"rare",
     desc:"+25 dégâts à la carte équipée pendant 3 tours."},
+  disque:{name:"Disque (Stand)",img:"disque",kind:"support",rarity:"epique",
+    desc:"Copie une attaque de la carte adverse et l'utilise avec +30 dégâts."},
+  requiemarrow:{name:"Flèche du Requiem",img:"requiemarrow",kind:"attach",rarity:"mythique",
+    desc:"+180 PV et dégâts ×2 pour la carte équipée pendant 3 tours."},
+  redstoneaja:{name:"Pierre Rouge d'Aja",img:"redstoneaja",kind:"attach",rarity:"legendaire",
+    desc:"La carte équipée ne subit aucun dégât pendant 3 tours, puis 1 chance sur 2 d'être paralysée 3 tours."},
+  masquedepierre:{name:"Masque de Pierre",img:"masquedepierre",kind:"attach",rarity:"legendaire",
+    desc:"+35 dégâts permanents et +25 PV. À la mort de la carte, une carte de ton banc subit 50 dégâts."},
 };
 
 const ALL = Object.assign({}, CARDS, MULTI, DUO);
@@ -1166,7 +1265,10 @@ const FUSIONS = [
   {ingredients:["gokuSSJ2","vegetaSSJ2"],result:"vegetoSSJ1"},
   {ingredients:["gojoPrime","sukunaPrime"],result:"gojosukuna"},
   {ingredients:["mahoraga","sukunaPrime"],result:"mahoragasukuna"},
-  {ingredients:["sukunaMegumi","yujiPrime"],result:"sukunayuji"},
+  {ingredients:["yujiSukuna","sukunaDestruction"],result:"sukunayuji"},
+  {ingredients:["jotaroStand","josephBase"],result:"stardustcrussaders"},
+  {ingredients:["giornobucciariti","giornoRequiem"],result:"lapassione"},
+  {ingredients:["giornoStand","giornoBase"],result:"giornobucciariti"},
 ];
 
 /* ============================================================
@@ -1198,6 +1300,26 @@ const STAGES = [
     deck:["madaraE","kidbuuE","freezerE","madaraE","kidbuuE","obitoE","freezerE",
           "energy_rouge","energy_bleue","energy_universelle","energy_universelle","energy_rouge","energy_bleue",
           "energy_universelle","energy_verte","haricot","haricot","robeakatsuki","armure","capsulecorp"] },
+  { lvl:6, name:"L'Empereur du Mal", boss:"freezerFinalE", anime:"dragonball",
+    intro:"Freezer atteint sa forme finale. Sa puissance n'a plus de limite connue.",
+    deck:["freezerFinalE","freezerE","kidbuuE","freezerFinalE","freezerE","madaraE","kidbuuE",
+          "energy_bleue","energy_universelle","energy_universelle","energy_bleue","energy_universelle","energy_rouge",
+          "energy_universelle","energy_bleue","haricot","haricot","robeakatsuki","armure","capsulecorp"] },
+  { lvl:7, name:"La Terreur Rose", boss:"buuE", anime:"dragonball",
+    intro:"Majin Buu absorbe tout sur son passage. Rien ne semble pouvoir l'arrêter.",
+    deck:["buuE","kidbuuE","freezerFinalE","buuE","kidbuuE","madaraE","freezerFinalE",
+          "energy_bleue","energy_universelle","energy_universelle","energy_bleue","energy_universelle","energy_universelle",
+          "energy_bleue","energy_rouge","haricot","haricot","robeakatsuki","armure","capsulecorp"] },
+  { lvl:8, name:"Le Monde s'Arrête", boss:"dioStandE", anime:"jjba",
+    intro:"DIO arrête le temps à volonté. Chaque seconde peut être ta dernière.",
+    deck:["dioStandE","dioStandE","buuE","madaraE","dioStandE","kidbuuE","buuE",
+          "energy_rouge","energy_universelle","energy_universelle","energy_rouge","energy_universelle","energy_universelle",
+          "energy_rouge","energy_bleue","haricot","haricot","robeakatsuki","armure","capsulecorp"] },
+  { lvl:9, name:"Au-delà du Paradis", boss:"dioHeavenE", anime:"jjba",
+    intro:"DIO a atteint le Paradis. Il a réécrit le destin lui-même. Personne ne l'a jamais vaincu.",
+    deck:["dioHeavenE","dioStandE","buuE","dioHeavenE","dioStandE","buuE","madaraE",
+          "energy_universelle","energy_universelle","energy_universelle","energy_universelle","energy_universelle","energy_universelle",
+          "energy_rouge","energy_bleue","haricot","haricot","robeakatsuki","armure","capsulecorp"] },
 ];
 
 /* ============================================================
@@ -1213,6 +1335,10 @@ const AI_PROFILE = {
   3:{smartAttack:0.85, useUtil:0.80, benchFill:0.85, lookahead:0.70, hpBoost:1.25, energyPerTurn:2, bestHand:0.8, extraDraw:1},
   4:{smartAttack:0.95, useUtil:0.92, benchFill:0.95, lookahead:0.88, hpBoost:1.45, energyPerTurn:2, bestHand:1.0, extraDraw:1},
   5:{smartAttack:1.00, useUtil:1.00, benchFill:1.00, lookahead:1.00, hpBoost:1.70, energyPerTurn:3, bestHand:1.0, extraDraw:2},
+  6:{smartAttack:1.00, useUtil:1.00, benchFill:1.00, lookahead:1.00, hpBoost:1.85, energyPerTurn:3, bestHand:1.0, extraDraw:2},
+  7:{smartAttack:1.00, useUtil:1.00, benchFill:1.00, lookahead:1.00, hpBoost:2.00, energyPerTurn:3, bestHand:1.0, extraDraw:2},
+  8:{smartAttack:1.00, useUtil:1.00, benchFill:1.00, lookahead:1.00, hpBoost:2.20, energyPerTurn:4, bestHand:1.0, extraDraw:3},
+  9:{smartAttack:1.00, useUtil:1.00, benchFill:1.00, lookahead:1.00, hpBoost:2.50, energyPerTurn:4, bestHand:1.0, extraDraw:3},
 };
 
 </script>
@@ -1847,7 +1973,7 @@ function bindControls(){
       B.mode=null; renderBattle();
     }); bindCancel(()=>{B.mode=null;renderBattle();}); return;
   }
-  if(["haricot","armure","ramen","robe","sukunadoigt","mahogararoue"].includes(B.mode)){
+  if(["haricot","armure","ramen","robe","sukunadoigt","mahogararoue","masquedepierre","redstoneaja","requiemarrow"].includes(B.mode)){
     attachClickTargets(f=>applyTargetedUtil(f)); bindCancel(()=>{B.mode=null;B.pendingUtil=null;renderBattle();}); return;
   }
   if(B.mode==="benchPlace"){
@@ -1958,7 +2084,22 @@ function playUtil(uid, handIdx, side, foe, isAI){
       // supports sans ciblage : effet immédiat sur le bon camp
       applyUtilTo(uid, side.active, side, handIdx); side.supportThisTurn=true; if(!isAI) renderBattle(); return true;
     }
-    case "haricot": case "armure": case "ramen": case "robeakatsuki": case "sukunadoigt": case "mahogararoue":{
+    case "disque":{
+      const foeActive = foe.active;
+      if(!foeActive || !side.active){ if(!isAI) pushLog("Aucune cible pour le Disque."); return false; }
+      // copie la meilleure attaque de l'adversaire, +30 dégâts, infligée à l'adversaire
+      const best = foeActive.attacks.reduce((a,b)=>b.dmg>a.dmg?b:a, foeActive.attacks[0]);
+      let dmg = best.dmg + 30 + (side.active.bonusDmg||0);
+      if(side.active.dmgMultTurns>0) dmg*=2;
+      const dealt = applyDamageTo(foeActive, dmg);
+      pushLog(`${side===B.enemy?"L'adversaire":"Disque"} copie ${best.name} (+30) : ${dealt>0?dealt+' dégâts':'bloqué'} !`);
+      discardFrom(side,handIdx); side.supportThisTurn=true;
+      if(!isAI){ floatOnCard('enemy', dealt>0?`-${dealt}`:"Bloqué !", dealt>0?"hit":"heal"); }
+      if(foeActive.hp<=0) koActive(foe, side);
+      if(!isAI) renderBattle();
+      return true;
+    }
+    case "haricot": case "armure": case "ramen": case "robeakatsuki": case "sukunadoigt": case "mahogararoue": case "masquedepierre": case "redstoneaja": case "requiemarrow":{
       if(isAI){
         // IA : choisit la meilleure cible automatiquement
         const target = chooseUtilTargetAI(uid, side);
@@ -1981,6 +2122,9 @@ function applyUtilTo(uid, f, side, handIdx){
     case "ramen":{ f.attached="ramen"; f.ramenTurns=2; pushLog(`${side===B.enemy?"L'adversaire équipe le ramen à":"Ramen équipé à"} ${f.name}.`); break; }
     case "robeakatsuki":{ f.attached="robeakatsuki"; f.bonusDmg=(f.bonusDmg||0)+20; pushLog(`${side===B.enemy?"L'adversaire équipe la robe à":"Robe équipée à"} ${f.name} (+20 dégâts).`); break; }
     case "sukunadoigt":{ f.attached="sukunadoigt"; f.tempBonus=25; f.tempBonusTurns=3; f.bonusDmg=(f.bonusDmg||0)+25; pushLog(`${side===B.enemy?"L'adversaire équipe le Doigt de Sukuna à":"Doigt de Sukuna équipé à"} ${f.name} (+25 dégâts, 3 tours).`); break; }
+    case "masquedepierre":{ f.attached="masquedepierre"; f.bonusDmg=(f.bonusDmg||0)+35; f.maxHp+=25; f.hp+=25; f.masqueDeath=true; pushLog(`${side===B.enemy?"L'adversaire équipe le Masque de Pierre à":"Masque de Pierre équipé à"} ${f.name} (+35 dégâts, +25 PV).`); break; }
+    case "redstoneaja":{ f.attached="redstoneaja"; f.invincibleTurns=3; f.ajaPending=true; pushLog(`${side===B.enemy?"L'adversaire équipe la Pierre Rouge d'Aja à":"Pierre Rouge d'Aja équipée à"} ${f.name} (invincible 3 tours).`); break; }
+    case "requiemarrow":{ f.attached="requiemarrow"; f.maxHp+=180; f.hp+=180; f.dmgMultTurns=3; pushLog(`${side===B.enemy?"L'adversaire équipe la Flèche du Requiem à":"Flèche du Requiem équipée à"} ${f.name} (+180 PV, dégâts ×2, 3 tours).`); centerText("Requiem !","turn"); break; }
     case "mahogararoue":{ f.attached="mahogararoue"; f.roueActive=true; pushLog(`${side===B.enemy?"L'adversaire équipe la Roue de Mahoraga à":"Roue de Mahoraga équipée à"} ${f.name} (ignore la faiblesse, +5 dégâts/tour).`); break; }
     case "invertedspear":{ side.nextAtkBonus=(side.nextAtkBonus||0)+50; pushLog(`${side===B.enemy?"L'adversaire prépare la Lance Inversée":"Lance Inversée : +50 dégâts à ta prochaine attaque"}.`); break; }
     case "prisonceleste":{ const foe = side===B.player?B.enemy:B.player; foe.attackBlockedTurns=2; pushLog(`${side===B.enemy?"L'adversaire invoque la Prison Céleste":"Prison Céleste : l'adversaire ne peut plus attaquer pendant 2 tours"}.`); centerText("Prison Céleste","turn"); break; }
@@ -2115,10 +2259,12 @@ async function playerAttack(atkIdx){
   if(act.talent==='fusionImparfaite'){ act.hp=Math.max(1, act.hp-10); }
   animAttack("player");
   await playVFX(atk.vfx, document.getElementById("f-player"), document.getElementById("f-enemy"));
-  E.active.hp-=dmg; flashHp("enemy");
-  floatOnCard("enemy", `-${dmg}${weak?' ⚠':''}`, "hit");
+  let finalDmg = dmg;
+  if(act.dmgMultTurns>0){ finalDmg*=2; }
+  const dealt = applyDamageTo(E.active, finalDmg); flashHp("enemy");
+  floatOnCard("enemy", dealt>0?`-${dealt}${weak?' ⚠':''}`:"Bloqué !", dealt>0?"hit":"heal");
   // talent adaptation : la cible touchée gagne +8 dégâts permanents
-  if(E.active && E.active.talent==='adaptation' && dmg>0){ E.active.bonusDmg=(E.active.bonusDmg||0)+8; }
+  if(E.active && E.active.talent==='adaptation' && dealt>0){ E.active.bonusDmg=(E.active.bonusDmg||0)+8; }
   applyPendingStatus(P, E.active);
   if(E.active.hp<=0) koActive(E, P);
   renderBattle(); await wait(450);
@@ -2135,6 +2281,16 @@ function koActive(side, scorer){
   centerText(`${f.name} K.O. !`, scorer===B.player?"good":"bad");
   // animation d'explosion sur la carte K.O. (avant qu'elle disparaisse)
   animKO(side===B.player?'player':'enemy');
+  // Masque de Pierre : à la mort, une carte du banc subit 50 dégâts
+  if(f.masqueDeath){
+    const alive=side.bench.filter(b=>b && !b.ko);
+    if(alive.length){
+      const victim=alive[Math.floor(Math.random()*alive.length)];
+      victim.hp-=50;
+      pushLog(`Malédiction du Masque de Pierre : ${victim.name} subit 50 dégâts !`);
+      if(victim.hp<=0){ victim.ko=true; const oppo=(side===B.player)?B.enemy:B.player; oppo.points++; side.discard.push({kind:'fighter',id:victim.id}); pushLog(`${victim.name} succombe à la malédiction !`); }
+    }
+  }
   side.discard.push({kind:'fighter', id:f.id});
   if(f.attached) side.discard.push({kind:'util', id:f.attached});
   side.active=null;
@@ -2174,6 +2330,21 @@ function tickTurnEffects(side){
     }
     // Roue de Mahoraga : +5 dégâts cumulés chaque tour
     if(f.roueActive){ f.bonusDmg=(f.bonusDmg||0)+5; }
+    // Flèche du Requiem : dégâts ×2 pendant 3 tours
+    if(f.dmgMultTurns>0){
+      f.dmgMultTurns--;
+      if(f.dmgMultTurns===0 && f.attached==='requiemarrow') f.attached=null;
+    }
+    // Pierre Rouge d'Aja : invincible 3 tours, puis 1 chance sur 2 d'être paralysé 3 tours
+    if(f.invincibleTurns>0){
+      f.invincibleTurns--;
+      if(f.invincibleTurns===0 && f.ajaPending){
+        f.ajaPending=false;
+        if(f.attached==='redstoneaja') f.attached=null;
+        if(Math.random()<0.5){ f.status='paralyse'; f.statusTurns=3; pushLog(`${f.name} est paralysé par le contrecoup de la Pierre d'Aja !`); }
+        else { pushLog(`${f.name} résiste au contrecoup de la Pierre d'Aja.`); }
+      }
+    }
   }
 }
 
@@ -2228,8 +2399,11 @@ async function enemyTurn(){
   B.busy=true; renderBattle();
   animAttack("enemy");
   await playVFX(atk.vfx, document.getElementById("f-enemy"), document.getElementById("f-player"));
-  if(P.active){ P.active.hp-=dmg; flashHp("player"); floatOnCard("player", `-${dmg}${weak?' ⚠':''}`, "hit");
-    if(P.active.talent==='adaptation' && dmg>0){ P.active.bonusDmg=(P.active.bonusDmg||0)+8; }
+  if(P.active){
+    let finalDmg = dmg; if(E.active.dmgMultTurns>0){ finalDmg*=2; }
+    const dealt = applyDamageTo(P.active, finalDmg); flashHp("player");
+    floatOnCard("player", dealt>0?`-${dealt}${weak?' ⚠':''}`:"Bloqué !", dealt>0?"hit":"heal");
+    if(P.active.talent==='adaptation' && dealt>0){ P.active.bonusDmg=(P.active.bonusDmg||0)+8; }
     applyPendingStatus(E, P.active); if(P.active.hp<=0) koActive(P, E); }
   renderBattle(); await wait(450);
   await controlPhase("enemy");
@@ -2305,6 +2479,14 @@ function evalUtil(uid, ai){
       { if(!P.active) return 0;
         const foeReady = energyCount(P.active)>=2;
         return foeReady ? 1.0*ai.lookahead : 0.4; }
+    case "disque": // copie l'attaque du joueur +30 : bon si le joueur actif est dangereux
+      { if(!P.active||!act) return 0; return P.active.attacks.reduce((m,a)=>Math.max(m,a.dmg),0)>=50 ? 0.9 : 0.5; }
+    case "requiemarrow": // +180 PV et x2 dégâts : excellent sur l'actif
+      return (!act.attached && energyCount(act)>=2) ? 1.1 : (!act.attached?0.6:0);
+    case "redstoneaja": // invincible 3 tours : très bon si l'actif est en danger
+      return (!act.attached) ? (act.hp/act.maxHp<0.5?1.0:0.55) : 0;
+    case "masquedepierre": // +35 dmg permanent + PV : bon sur actif sans équipement
+      return (!act.attached) ? 0.8 : 0;
   }
   return 0;
 }
@@ -2327,6 +2509,12 @@ function chooseUtilTargetAI(uid, side){
     const free=cands.filter(f=>!f.attached);
     if(free.length===0) return null;
     // priorité à l'actif chargé en énergie
+    if(!side.active.attached) return side.active;
+    return free.reduce((a,b)=> energyCount(b)>energyCount(a)?b:a, free[0]);
+  }
+  if(uid==='sukunadoigt'||uid==='mahogararoue'||uid==='masquedepierre'||uid==='redstoneaja'||uid==='requiemarrow'){
+    const free=cands.filter(f=>!f.attached);
+    if(free.length===0) return null;
     if(!side.active.attached) return side.active;
     return free.reduce((a,b)=> energyCount(b)>energyCount(a)?b:a, free[0]);
   }
@@ -2432,6 +2620,13 @@ function startPlayerTurn(){
 
 /* ============================================================ DIVERS ============================================================ */
 function flashHp(side){ const el=document.getElementById("f-"+side); if(el){ el.classList.add("dmg-flash"); setTimeout(()=>el.classList.remove("dmg-flash"),350);} }
+/* applique des dégâts à une carte en tenant compte de l'invincibilité (Pierre d'Aja).
+   Renvoie les dégâts réellement infligés. */
+function applyDamageTo(target, dmg){
+  if(!target) return 0;
+  if(target.invincibleTurns>0){ return 0; } // Pierre Rouge d'Aja : aucun dégât
+  target.hp-=dmg; return dmg;
+}
 function wait(ms){ return new Promise(r=>setTimeout(r,ms)); }
 function pushLog(m){ if(!B) return; B.log.push(m); if(B.log.length>4) B.log.shift(); renderLog(); }
 function renderLog(){ const el=document.getElementById("battleLog"); if(el) el.innerHTML=B.log.map(l=>`<div>${l}</div>`).join(""); }
@@ -2951,7 +3146,7 @@ function loadSave(){
         return;
       }
     }
-    const s = JSON.parse(raw);
+    const s = raw ? JSON.parse(raw) : null;
     if(s){
       collection = s.collection || {};
       money = typeof s.money==="number" ? s.money : START_MONEY;
@@ -2961,8 +3156,12 @@ function loadSave(){
       spinsSinceMythique = s.spinsSinceMythique || 0;
       spinsSinceDivine = s.spinsSinceDivine || 0;
       packsOpened = s.packsOpened || 0;
+    } else {
+      // aucun sauvegarde (ni v7 ni v6) : nouveau joueur, valeurs par défaut
+      collection = {}; money = START_MONEY; maxStage = 1; savedDeck = [];
+      totalSpins = 0; spinsSinceMythique = 0; spinsSinceDivine = 0; packsOpened = 0;
     }
-  }catch(e){ collection={}; money=START_MONEY; }
+  }catch(e){ collection={}; money=START_MONEY; maxStage=1; savedDeck=[]; totalSpins=0; spinsSinceMythique=0; spinsSinceDivine=0; packsOpened=0; }
 }
 function persist(){
   localStorage.setItem(SAVE_KEY, JSON.stringify({collection,money,maxStage,savedDeck,totalSpins,spinsSinceMythique,spinsSinceDivine,packsOpened}));
